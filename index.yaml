@@ -1,0 +1,9 @@
+indexes:
+- kind: Message
+  ancestor: no
+  properties:
+  - name: uuid     
+  - name: to
+  - name: address
+  - name: date
+    direction: desc

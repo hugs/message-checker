@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Check Messages - Inbox</title>
+
+        <link href="/css/bootstrap.css" rel="stylesheet">
+        <link href="/css/check.css" rel="stylesheet">
+
+        <script src="/js/zepto.min.js"></script>
+    </head>
+    <body>
+
+        <div class="container">
+            <h4>Messages for: <span id="address">{{ address }}</span>@message-checker.appspotmail.com</h4>
+            <p></p>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th class="time">Time</th>
+                </tr>
+              </thead>
+              <tbody id="table-body">
+                  {% for message in messages %}
+                  <tr>
+                      <td>
+                          <a id="subject-{{ loop.index0 }}" href="/message-body/{{ message.uuid }}">{{ message.subject}}</a>
+                      </td>
+                      <td class="time">
+                          <a id="date-{{ loop.index0 }}" href="/message-body/{{ message.uuid }}">{{ message.date.strftime('%I:%M %p') }}</a>
+                      </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </body>
+    <script>
+        var get_messages = function(){
+            var address = $('#address').text();
+            console.log("Checking messages for: " + address);
+            $.getJSON('/address/' + address + '/messages.json', function(data){
+                tbody = $('#table-body');
+                tbody.html("");
+                for (var i in data) {
+                    tbody.append('<tr>' +
+                                   '<td>' +
+                                     '<a id="subject-' + i + '" href="/message-body/' + data[i][0] + '">' + data[i][1] + '</a>' +
+                                   '</td>' +
+                                   '<td class="time">' +
+                                     '<a id="date-' + i + '" href="/message-body/' + data[i][0] + '">' + data[i][2] + '</a>' +
+                                   '</td>' +
+                                 '</tr>');
+                }
+            })
+        }
+
+        window.setInterval(get_messages,10000);
+    </script>
+</html>

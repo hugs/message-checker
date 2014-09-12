@@ -1,0 +1,45 @@
+application: message-checker
+version: 2
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /favicon\.ico
+  static_files: static/images/favicon.ico
+  upload: static/images/favicon\.ico
+
+- url: /robots.txt
+  static_files: static/robots.txt
+  upload: static/robots.txt
+
+- url: /css
+  static_dir: static/css
+  
+- url: /fonts
+  static_dir: static/fonts  
+
+- url: /js
+  static_dir: static/js  
+
+- url: /admin/delete-old-messages
+  script: cron.app
+  login: admin 
+
+- url: /_ah/mail/.+
+  script: handle_incoming_email.app
+  login: admin        
+
+- url: .*
+  script: main.app
+
+libraries:
+- name: webapp2
+  version: "2.5.2"
+  
+- name: jinja2
+  version: 2.6  
+  
+inbound_services:
+- mail
+
